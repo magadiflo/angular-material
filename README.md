@@ -362,3 +362,66 @@ $my-theme: mat.define-light-theme((
  density: 0,
 ));
 ```
+
+## Aplicando un tema a los componentes
+
+El mixin de Sass `core-theme` emite estilos de requisitos previos para características comunes utilizadas por múltiples componentes, como ondas. **Este mixin debe incluirse una vez por tema.**
+
+Cada componente de `Angular Material` tiene una combinación para cada dimensión temática: `base`, `color`, `tipografía` y `densidad`. *Por ejemplo, `MatButton` declara la base del botón, el color del botón, la tipografía del botón y la densidad del botón.* Cada mixin emite únicamente los estilos correspondientes a esa dimensión de personalización.
+
+Además, cada componente tiene un mixin de `"tema"` que emite todos los estilos que dependen de la configuración del tema. Este mixin de temas solo emite estilos de color, tipografía o densidad si proporcionó una configuración correspondiente para `define-light-theme` o `define-dark-theme`, y siempre emite los estilos base.
+
+Aplique los estilos para cada uno de los componentes utilizados en su aplicación incluyendo cada uno de sus mixins temáticos de Sass.
+
+
+```scss
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$my-primary: mat.define-palette(mat.$indigo-palette, 500);
+$my-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+$my-theme: mat.define-light-theme((
+ color: (
+   primary: $my-primary,
+   accent: $my-accent,
+ ),
+ typography: mat.define-typography-config(),
+ density: 0,
+));
+
+// Emita estilos theme-dependent para funciones comunes utilizadas en múltiples componentes.
+@include mat.core-theme($my-theme);
+
+// Emite estilos para MatButton basados en `$my-theme`. Debido a que la configuración pasada 
+// a "define-light-theme" omite la tipografía, "button-theme" no emitirá ningún estilo
+// de tipografía.
+@include mat.button-theme($my-theme);
+
+// Incluya aquí los mixins de temas para otros componentes que utilice.
+```
+
+Como alternativa a enumerar todos los componentes que utiliza su aplicación, `Angular Material` ofrece mixins de Sass que incluyen estilos para todos los componentes de la biblioteca: `all-component-bases, all-component-colors, all-component-typographies, all-component-densities, and all-component-themes`. Estos mixins se comportan igual que los mixins de componentes individuales, excepto que emiten estilos para el `core-theme` y los más de 35 componentes en Angular Material. A menos que su aplicación utilice todos los componentes, esto producirá CSS innecesario.
+
+```scss
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$my-primary: mat.define-palette(mat.$indigo-palette, 500);
+$my-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+$my-theme: mat.define-light-theme((
+ color: (
+   primary: $my-primary,
+   accent: $my-accent,
+ ),
+ typography: mat.define-typography-config(),
+ density: 0,
+));
+
+@include mat.all-component-themes($my-theme);
+```
+
+**Para incluir los estilos emitidos en su aplicación, agregue su archivo de tema al array de estilos del archivo `angular.json` de su proyecto.**
