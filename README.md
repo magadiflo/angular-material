@@ -4,6 +4,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 **Capítulos**
 - Capítulo 1: [Cómo instalar Angular Material en Angular 17](https://www.youtube.com/watch?v=2izPvkchsoA)
+- Capítulo 2: [Theming Angular Material](https://material.angular.io/guide/theming#defining-a-theme)
 
 ---
 
@@ -237,3 +238,62 @@ Luego, este componente lo importamos en el componente `AppComponent` y lo agrega
 A continuación se muestra los componentes de Angular material utilizados en esta demostración:
 
 ![componentes usando angular material](./src/assets/01.componentes-usando-angular-material.png)
+
+---
+
+# Capítulo 2: [Theming Angular Material](https://material.angular.io/guide/theming#defining-a-theme)
+
+---
+
+
+## ¿Qué es la tematización?
+
+El sistema de temas de Angular Material le permite personalizar los estilos de `base`, `color`, `tipografía` y `densidad` para los componentes de su aplicación. **El sistema de temas se basa en la especificación Material Design de Google.**
+
+Este documento describe los conceptos y las API para personalizar colores. Para personalizar la tipografía, consulte [Tipografía de angular material](https://material.angular.io/guide/typography). Para obtener orientación sobre cómo crear componentes que se puedan personalizar con este sistema, consulte [Tematización de sus propios componentes](https://material.angular.io/guide/theming-your-components).
+
+## SASS (SCSS)
+
+Las API de temática de Angular Material están construidas con `Sass`. Este documento asume familiaridad con los conceptos básicos de CSS y Sass, incluidas `variables`, `funciones` y `mixins`.
+
+Puede utilizar Angular Material sin Sass utilizando un tema prediseñado. Sin embargo, el uso directo de la biblioteca de la API Sass le brinda el mayor control sobre los estilos en su aplicación.
+
+## Paletas
+
+**Una paleta es una colección de colores** que representan una parte del espacio de color. **Cada valor de esta colección se llama `tono`.** En `Material Design`, **cada tono de una paleta tiene un número identificador.** Estos números identificadores incluyen `50` y luego cada valor `100` entre `100` y `900`. **Los números ordenan los tonos dentro de una paleta del más claro al más oscuro.**
+
+`Angular Material` representa una paleta como un `mapa de Sass`. **Este mapa contiene los `tonos de la palet`a y otro mapa anidado de `colores de contraste` para cada uno de los tonos.** Los colores de contraste sirven como color de texto cuando se utiliza un tono como color de fondo. El siguiente ejemplo demuestra la estructura de una paleta. [Consulte el sistema de color de Material Design para obtener más información.](https://m2.material.io/design/color/the-color-system.html#color-usage-and-palettes)
+
+```scss
+$indigo-palette: (
+ 50: #e8eaf6,
+ 100: #c5cae9,
+ 200: #9fa8da,
+ 300: #7986cb,
+ // ... continúa hasta el 900
+ contrast: (
+   50: rgba(black, 0.87),
+   100: rgba(black, 0.87),
+   200: rgba(black, 0.87),
+   300: white,
+   // ... continúa hasta el 900
+ )
+);
+```
+
+## Crea tu propia paleta
+
+Puede crear su propia paleta definiendo un `mapa Sass` que coincida con la estructura descrita en la sección Paletas anterior. El mapa debe definir tonos para `50` y cada cien entre `100` y `900`. El mapa `también debe definir un mapa de contraste` con colores de contraste para cada tono.
+
+## Paletas predefinidas
+
+Paletas predefinidas
+Angular Material ofrece paletas predefinidas basadas en la versión 2014 de la especificación Material Design. [Consulte las paletas de colores de Material Design 2014 para obtener una lista completa.](https://m1.material.io/style/color.html#color-color-palette)
+
+Además de los tonos numerados del cero al 900, las paletas de Material Design 2014 incluyen distintos tonos de acento numerados como A100, A200, A400 y A700. **Angular Material no requiere estos tonos, pero puede usarlos** al definir un tema como se describirá en la sección **definición de un tema.**
+
+```scss
+@use '@angular/material' as mat;
+
+$my-palette: mat.$indigo-palette;
+```
