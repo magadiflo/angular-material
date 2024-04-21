@@ -425,3 +425,50 @@ $my-theme: mat.define-light-theme((
 ```
 
 **Para incluir los estilos emitidos en su aplicación, agregue su archivo de tema al array de estilos del archivo `angular.json` de su proyecto.**
+
+## Dimensiones temáticas
+
+Los temas de Angular Material se dividen en cuatro dimensiones: `base`, `color`, `tipografía` y `densidad`.
+
+### Base
+
+Estilos base comunes para el sistema de diseño. Estos estilos no cambian según los colores, la tipografía o la densidad configurados, por lo que solo deben incluirse una vez por aplicación. Estos mixins incluyen estilos estructurales como radio de borde, ancho de borde, etc. Todos los componentes tienen un mixin base que se puede usar para incluir sus estilos base. Por ejemplo:
+
+```scss
+@include mat.checkbox-base($tema)
+```
+
+### Color
+
+Estilos relacionados con los colores de tu aplicación. Estos estilos deben incluirse al menos una vez en su aplicación. Dependiendo de sus necesidades, es posible que deba incluir estos estilos varias veces con diferentes configuraciones. (Por ejemplo, si su aplicación admite colores de tema claros y oscuros). Todos los componentes tienen una combinación de colores que se puede usar para incluir sus estilos de color. Por ejemplo: 
+
+```scss
+@include mat.checkbox-color($tema)
+```
+
+### Tipografía
+
+Estilos relacionados con las fuentes utilizadas en su aplicación, incluida **la familia de fuentes, el tamaño, el grosor, el alto de línea y el espaciado entre letras.** Estos estilos deben incluirse al menos una vez en su aplicación. Dependiendo de sus necesidades, es posible que deba incluir estos estilos varias veces con diferentes configuraciones. (Por ejemplo, si su aplicación admite la lectura de contenido en fuente serif o sans-serif). Todos los componentes tienen una combinación de tipografía que se puede usar para incluir sus estilos de tipografía.
+
+```scss
+@include mat.checkbox-typography($tema)
+```
+
+### Densidad
+
+Estilos relacionados con el tamaño y espaciado de los elementos de su aplicación. Estos estilos deben incluirse al menos una vez en su aplicación. Dependiendo de sus necesidades, es posible que deba incluir estos estilos varias veces con diferentes configuraciones. (Por ejemplo, si su aplicación admite tanto el modo normal como el compacto). Todos los componentes tienen una combinación de densidad que se puede utilizar para incluir sus estilos de densidad. 
+
+```scss
+ @include mat.checkbox-density($tema)
+```
+
+### Theme mixin
+
+Todos los componentes también admiten una combinación de temas que se puede utilizar para incluir los estilos del componente para todas las dimensiones del tema a la vez. Por ejemplo:
+
+```scss
+@include mat.checkbox-theme($tema)
+```
+
+El enfoque recomendado es confiar en los mixins de temas para establecer sus estilos base y, si es necesario, usar los mixins de una sola dimensión para anular aspectos particulares de partes de su aplicación.
+
