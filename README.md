@@ -4,7 +4,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 **Capítulos**
 - Capítulo 1: [Cómo instalar Angular Material en Angular 17](https://www.youtube.com/watch?v=2izPvkchsoA)
-- Capítulo 2: [Theming Angular Material](https://material.angular.io/guide/theming#defining-a-theme)
+- Capítulo 2: [Toería - Theming Angular Material](https://material.angular.io/guide/theming#defining-a-theme)
 
 ---
 
@@ -241,7 +241,7 @@ A continuación se muestra los componentes de Angular material utilizados en est
 
 ---
 
-# Capítulo 2: [Theming Angular Material](https://material.angular.io/guide/theming#defining-a-theme)
+# Capítulo 2: [Teoría - Theming Angular Material](https://material.angular.io/guide/theming#defining-a-theme)
 
 ---
 
@@ -472,3 +472,84 @@ Todos los componentes también admiten una combinación de temas que se puede ut
 
 El enfoque recomendado es confiar en los mixins de temas para establecer sus estilos base y, si es necesario, usar los mixins de una sola dimensión para anular aspectos particulares de partes de su aplicación.
 
+## Definiendo múltiples temas
+
+Con la API de Sass descrita en Definición de un tema, también puede definir varios temas repitiendo las llamadas a la API varias veces. Puede hacer esto en el mismo archivo de tema o en archivos de tema separados.
+
+## Múltiples temas en un archivo 
+
+Definir varios temas en un solo archivo le permite admitir varios temas sin tener que gestionar la carga de varios recursos CSS. La desventaja, sin embargo, es que tu CSS incluirá más estilos de los necesarios.
+
+Para controlar qué tema se aplica y cuándo, `@include` los mixins solo dentro de un contexto especificado mediante la declaración de reglas CSS. 
+
+**NOTA**
+
+> Los mixins le permiten definir estilos que se pueden reutilizar en toda su hoja de estilos. Facilitan evitar el uso de clases no semánticas como .float-left y distribuir colecciones de estilos en bibliotecas.
+>
+>Los mixins se definen usando la regla `@mixin`, que se escribe `@mixin <nombre> { ... }` o `@mixin nombre(<argumentos...>) { ... }.` El nombre de un mixin puede ser cualquier identificador de Sass y puede contener cualquier declaración que no sea declaraciones de nivel superior. Se pueden utilizar para encapsular estilos que se pueden colocar en una única regla de estilo; pueden contener reglas de estilo propias que pueden anidarse en otras reglas o incluirse en el nivel superior de la hoja de estilo; o simplemente pueden servir para modificar variables.
+>
+>Los mixins se incluyen en el contexto actual utilizando la regla` @include`, que se escribe `@include <nombre>` o `@include <nombre>(<argumentos...>)`, con el nombre del mixin incluido.
+>
+> [Consulte la documentación de Sass mixins para obtener más información.](https://sass-lang.com/documentation/at-rules/mixin/).
+
+
+```scss
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// Define un tema oscuro
+$dark-theme: mat.define-dark-theme((
+ color: (
+   primary: mat.define-palette(mat.$pink-palette),
+   accent: mat.define-palette(mat.$blue-grey-palette),
+ ),
+ 
+  // Incluya únicamente "typography" y "density" en el tema oscuro predeterminado.
+  typography: mat.define-typography-config(),
+  density: 0,
+));
+
+// Define un tema claro
+$light-theme: mat.define-light-theme((
+ color: (
+   primary: mat.define-palette(mat.$indigo-palette),
+   accent: mat.define-palette(mat.$pink-palette),
+ ),
+));
+
+// Aplica el tema oscuro por defecto
+@include mat.core-theme($dark-theme);
+@include mat.button-theme($dark-theme);
+
+// Aplique el tema claro solo cuando el usuario prefiera temas claros.
+@media (prefers-color-scheme: light) {
+ // Utilice los mixins `-color` para aplicar solo estilos de color sin 
+ // volver a aplicar los mismos estilos de tipografía y densidad.
+ @include mat.core-color($light-theme);
+ @include mat.button-color($light-theme);
+}
+```
+
+## Personalización del estilo de alcance
+
+Puedes utilizar los mixins Sass de Angular Material para personalizar los estilos de los componentes dentro de un ámbito específico en tu aplicación. `La declaración de regla CSS en la que incluyes un mixin Sass determina su ámbito.` 
+
+El siguiente ejemplo muestra cómo personalizar el color de todos los botones dentro de elementos marcados con la clase CSS `.my-special-section`.
+
+```scss
+@use '@angular/material' as mat;
+
+.my-special-section {
+ $special-primary: mat.define-palette(mat.$orange-palette);
+ $special-accent: mat.define-palette(mat.$brown-palette);
+ $special-theme: mat.define-dark-theme((
+  color: (
+    primary: $special-primary, 
+    accent: $special-accent
+  ),
+ ));
+
+  @include mat.button-color($special-theme);
+}
+```
