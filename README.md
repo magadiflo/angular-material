@@ -317,10 +317,48 @@ Un archivo de tema es un archivo `Sass` que llama a los `mixins de Sass` de Angu
 
 ## El core mixin
 
-`Angular Material` define un mixin llamado `core` que incluye estilos de requisitos previos para características comunes utilizadas por múltiples componentes, como ondulaciones. **El `core mixin` debe incluirse exactamente una vez para su aplicación**, incluso si define varios temas. Incluir el core mixin varias veces dará como resultado CSS duplicado en su aplicación.
+`Angular Material` define un mixin llamado `core` que incluye estilos de requisitos previos para características comunes utilizadas por múltiples componentes, como ondulaciones. **El `mixin core` debe incluirse exactamente una vez para su aplicación**, incluso si define varios temas. Incluir el mixin core varias veces dará como resultado CSS duplicado en su aplicación.
 
 ```scss
 @use '@angular/material' as mat;
 
 @include mat.core();
+```
+
+## Definiendo un tema
+
+`Angular Material` representa un `tema` como un `mapa de Sass` que contiene sus opciones de `color`, `tipografía` y `densidad`, así como algunas configuraciones del sistema de diseño base. [Consulte Angular Material Typography](https://material.angular.io/guide/typography) para obtener una guía detallada sobre cómo personalizar la tipografía. Consulte [Personalización de la densidad](https://material.angular.io/guide/theming#customizing-density) a continuación para obtener detalles sobre cómo ajustar la densidad de los componentes.
+
+Para construir el `tema` primero es necesario definir las paletas `primary` y `accent`, con una paleta de `warn` opcional. La función de Sass `define-palette` acepta una paleta de colores, descrita en la sección anterior Paletas, así como cuatro números de tono opcionales. Estos cuatro tonos representan, en orden: el tono `"predeterminado"`, un tono `"más claro"`, un tono `"más oscuro"` y un tono de `"texto"`. Los componentes utilizan estos tonos para elegir el color más apropiado para diferentes partes de sí mismos.
+
+```scss
+@use '@angular/material' as mat;
+
+$my-primary: mat.define-palette(mat.$indigo-palette, 500);
+$my-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// La paleta "warn" es opcional y su valor predeterminado es rojo si no se especifica.
+$my-warn: mat.define-palette(mat.$red-palette);
+```
+
+Puedes construir un `tema` llamando a `define-light-theme` o `define-dark-theme` con el resultado de `define-palette`. La elección de un tema claro versus uno oscuro determina los colores de fondo y primer plano utilizados en todos los componentes.
+
+```scss
+@use '@angular/material' as mat;
+
+$my-primary: mat.define-palette(mat.$indigo-palette, 500);
+$my-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// La paleta "warn" es opcional y su valor predeterminado es rojo si no se especifica.
+$my-warn: mat.define-palette(mat.$red-palette);
+
+$my-theme: mat.define-light-theme((
+ color: (
+   primary: $my-primary,
+   accent: $my-accent,
+   warn: $my-warn,
+ ),
+ typography: mat.define-typography-config(),
+ density: 0,
+));
 ```
