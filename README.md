@@ -297,3 +297,30 @@ Además de los tonos numerados del cero al 900, las paletas de Material Design 2
 
 $my-palette: mat.$indigo-palette;
 ```
+
+## Themes
+
+Un `tema` es una colección de opciones de `color`, `tipografía` y `densidad`. **Cada tema incluye tres paletas** que determinan los colores de los componentes:
+
+- Una paleta `primary` para el color que aparece con más frecuencia en su aplicación.
+- Una paleta `accent` o `secundaria` que se utiliza para resaltar selectivamente partes clave de su interfaz de usuario.
+- Una paleta `warn` o `error` que se utiliza para advertencias y estados de error.
+
+Puede incluir los estilos CSS para un tema en su aplicación de dos maneras: 
+
+1. Definiendo un tema personalizado con Sass 
+2. Importando un archivo CSS de tema prediseñado.
+
+## Temas personalizados con sass
+
+Un archivo de tema es un archivo `Sass` que llama a los `mixins de Sass` de Angular Material para generar estilos CSS de `color`, `tipografía` y `densidad`.
+
+## El core mixin
+
+`Angular Material` define un mixin llamado `core` que incluye estilos de requisitos previos para características comunes utilizadas por múltiples componentes, como ondulaciones. **El `core mixin` debe incluirse exactamente una vez para su aplicación**, incluso si define varios temas. Incluir el core mixin varias veces dará como resultado CSS duplicado en su aplicación.
+
+```scss
+@use '@angular/material' as mat;
+
+@include mat.core();
+```
