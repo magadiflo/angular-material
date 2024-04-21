@@ -4,7 +4,8 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 **Capítulos**
 - Capítulo 1: [Cómo instalar Angular Material en Angular 17](https://www.youtube.com/watch?v=2izPvkchsoA)
-- Capítulo 2: [Toería - Theming Angular Material](https://material.angular.io/guide/theming#defining-a-theme)
+- Capítulo 2: [Teoría - Theming Angular Material](https://material.angular.io/guide/theming#defining-a-theme)
+- Capítulo 3: [Cómo personalizar el tema de angular material | Angular 17?](https://www.youtube.com/watch?v=M7q2Ty-y2zQ) 
 
 ---
 
@@ -287,7 +288,6 @@ Puede crear su propia paleta definiendo un `mapa Sass` que coincida con la estru
 
 ## Paletas predefinidas
 
-Paletas predefinidas
 Angular Material ofrece paletas predefinidas basadas en la versión 2014 de la especificación Material Design. [Consulte las paletas de colores de Material Design 2014 para obtener una lista completa.](https://m1.material.io/style/color.html#color-color-palette)
 
 Además de los tonos numerados del cero al 900, las paletas de Material Design 2014 incluyen distintos tonos de acento numerados como A100, A200, A400 y A700. **Angular Material no requiere estos tonos, pero puede usarlos** al definir un tema como se describirá en la sección **definición de un tema.**
@@ -553,3 +553,66 @@ El siguiente ejemplo muestra cómo personalizar el color de todos los botones de
   @include mat.button-color($special-theme);
 }
 ```
+
+---
+# Capítulo 3: Cómo personalizar el tema de angular material | Angular 17?
+
+---
+
+
+Aregamos el siguiente estilo de sass en el archivo `/src/styles.scss`:
+
+```scss
+@use '@angular/material' as mat;
+
+//* Definimos nuestro propio mapa para la paleta de colores primarios personalizados
+$custom-primary-palette: (
+  50: #E8EAF6,
+  100: #C5CAE9,
+  200: #9FA8DA,
+  300: #7986CB,
+  400: #5C6BC0,
+  500: #3F51B5,
+  600: #394AAE,
+  700: #3140A5,
+  800: #29379D,
+  900: #1B278D,
+  contrast: (
+    50: #000,
+    100: #000,
+    200: #000,
+    300: #FFF,
+    400: #FFF,
+    500: #FFF,
+    600: #FFF,
+    700: #FFF,
+    800: #FFF,
+    900: #FFF
+  )
+);
+
+// Utilizamos la paleta personalizada de color primario definida anteriormente
+$custom-primary: mat.define-palette($custom-primary-palette);
+// Para la paleta accent, utilizamos la paleta existente en angular material $pink-palette
+$custom-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+// Para definir la paleta warn, usamos la paleta existente en angular material $red-palette
+$custom-warn: mat.define-palette(mat.$red-palette);
+// Para la tipografía establecemos un $font-family personalizado
+$custom-typography: mat.define-typography-config($font-family: 'Roboto, "Helvetica Neue", sans-serif');
+
+// Definimos un theme claro utilizando las paletas anteriormente definidas
+$custom-theme: mat.define-light-theme((
+ color: (
+   primary: $custom-primary,
+   accent: $custom-accent,
+   warn: $custom-warn,
+ ),
+ typography: $custom-typography,
+ density: 0,
+));
+
+//* Se aplica el tema a todos lo componentes. También se puede aplicar el tema a un componente individual
+@include mat.all-component-themes($custom-theme);
+```
+
+![define theme](./src/assets/02.define-theme.png)
