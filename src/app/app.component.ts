@@ -3,11 +3,12 @@ import { RouterOutlet } from '@angular/router';
 
 import { HeaderComponent } from './header/header.component';
 import { TableComponent } from './table/table.component';
+import { SlideToggleComponent } from './slide-toggle/slide-toggle.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, TableComponent],
+  imports: [RouterOutlet, HeaderComponent, TableComponent, SlideToggleComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

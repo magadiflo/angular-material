@@ -41,7 +41,7 @@ UPDATE src/styles.scss (182 bytes)
 
 > Una vez instalado `Angula Material` es muy importante que detengamos el proyecto y volvamos a levantarlo para que los cambios instalados se apliquen correctamente.
 
-## Creando primer componente
+## Creando componente: mat-toolbar
 
 Crearemos un componente de Angular para incorporar algún componente de Angular Material y ver cómo es que se ve en nuestro proyecto:
 
@@ -110,7 +110,7 @@ En el componente html `app.component.html` agregamos el selector del componente 
 <app-header />
 ```
 
-## Creando segundo componente
+## Creando componente: mat-table
 
 Vamos a crear un componente en Angular par mostrar el componente de table de Angular material. Para eso creamos nuestro componente `table.component`:
 
@@ -184,6 +184,53 @@ export class AppComponent {
 
 }
 ```
+
+## Creando componente: mat-slide-toggle
+
+Crearemos el componente `slide-toggle`:
+
+```bash
+$ ng g c slideToggle --skip-tests
+CREATE src/app/slide-toggle/slide-toggle.component.html (28 bytes)
+CREATE src/app/slide-toggle/slide-toggle.component.ts (270 bytes)
+CREATE src/app/slide-toggle/slide-toggle.component.scss (0 bytes)
+```
+
+```html
+<section>
+  <mat-slide-toggle class="example-margin" [checked]="checked" [disabled]="disabled">
+    Slide me!
+  </mat-slide-toggle>
+</section>
+```
+
+```css
+section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 50px;
+  padding: 10px;
+}
+```
+
+```typescript
+@Component({
+  selector: 'app-slide-toggle',
+  standalone: true,
+  imports: [MatSlideToggleModule],
+  templateUrl: './slide-toggle.component.html',
+  styleUrl: './slide-toggle.component.scss'
+})
+export class SlideToggleComponent {
+  checked = false;
+  disabled = false;
+}
+```
+
+Luego, este componente lo importamos en el componente `AppComponent` y lo agregamos en el correspondiente html.
+
+
 
 ## Viendo componentes
 
