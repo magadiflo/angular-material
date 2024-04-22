@@ -5,7 +5,8 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 **Capítulos**
 - Capítulo 1: [Cómo instalar Angular Material en Angular 17](https://www.youtube.com/watch?v=2izPvkchsoA)
 - Capítulo 2: [Teoría - Theming Angular Material](https://material.angular.io/guide/theming#defining-a-theme)
-- Capítulo 3: [Cómo personalizar el tema de angular material | Angular 17?](https://www.youtube.com/watch?v=M7q2Ty-y2zQ) 
+- Capítulo 3: [Cómo personalizar el tema de angular material | Angular 17?](https://www.youtube.com/watch?v=M7q2Ty-y2zQ)
+- Capítulo 4: [Implementando Modo Dark y Modo Light Custom Theme](https://www.youtube.com/watch?v=yP82A-R8uTE) 
 
 ---
 
@@ -555,7 +556,8 @@ El siguiente ejemplo muestra cómo personalizar el color de todos los botones de
 ```
 
 ---
-# Capítulo 3: Cómo personalizar el tema de angular material | Angular 17?
+
+# Capítulo 3: [Cómo personalizar el tema de angular material | Angular 17?](https://www.youtube.com/watch?v=M7q2Ty-y2zQ)
 
 ---
 
@@ -615,4 +617,56 @@ $custom-theme: mat.define-light-theme((
 @include mat.all-component-themes($custom-theme);
 ```
 
+**IMPORTANTE**
+
+Cuando instalamos Angular Material, en el proceso de instalación nos pidió seleccionar un theme y nosotros seleccionamos `purple-green`. Pues bien, como estamos creando nuestro propio theme, debemos eliminar la referencia que se agregó en el archivo `angular.json` del theme que seleccionamos, dado que ahora hemos creado nuestro propio theme. En otras palabras, debemos ir al archivo `angular.json` y eliminar la referencia tal como se muestra a continuación:
+
+```json
+"styles": [
+    // Referencia creada cuando instalamos Angular Material
+    // "@angular/material/prebuilt-themes/purple-green.css", 
+    "src/styles.scss"
+],
+```
+
 ![define theme](./src/assets/02.define-theme.png)
+
+---
+# Capítulo 4: [Implementando Modo Dark y Modo Light Custom Theme](https://www.youtube.com/watch?v=yP82A-R8uTE) 
+
+---
+
+**IMPORTANTE**
+
+Cuando instalamos Angular Material, en el proceso de instalación nos pidió seleccionar un theme y nosotros seleccionamos `purple-green`. Pues bien, como crearemos nuestro propio theme, eliminaremos la referencia que se agregó en el archivo `angular.json` del theme que seleccionamos, dado que ahora crearemos nuestro propio theme. **Esto debíamos haberlo hecho en el capítulo 3 Cómo personalizar el tema de angular material | Angular 17?**
+pero se me olvidó.
+
+```json
+"styles": [
+    // Referencia creada cuando instalamos Angular Material
+    // "@angular/material/prebuilt-themes/purple-green.css", 
+    "src/styles.scss"
+],
+```
+
+Luego de eliminar la referencia del theme `purple-green` del `angular.json` y reiniciar la aplicación, vemos que ahora los componentes se tornan de la siguiente manera:
+
+![Elimina theme del angular json](./src/assets/03.delete-theme-angular-json.png)
+
+Es importante señalar que el código que se trabajó en el archivo `/src/styles.scss` del capítulo 3 fue eliminado, conservando únicamente lo siguiente:
+
+```scss
+@import './assets/scss/custom-theme.scss';
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+```
+
+El archivo `custom-theme.scss` será el archivo que contendrá nuestro theme personalizado, por el momento solo está creado el archivo, no tienen ningún estilo definido.

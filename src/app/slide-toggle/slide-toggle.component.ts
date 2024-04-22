@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-slide-toggle',
@@ -9,6 +9,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
   styleUrl: './slide-toggle.component.scss'
 })
 export class SlideToggleComponent {
-  checked = false;
-  disabled = false;
+
+  onChangeSlideToggle(event: MatSlideToggleChange): void {
+    console.log(event.checked);
+  }
+
 }
