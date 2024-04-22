@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
@@ -10,8 +11,15 @@ import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/sl
 })
 export class SlideToggleComponent {
 
+  private document = inject(DOCUMENT);
+
   onChangeSlideToggle(event: MatSlideToggleChange): void {
     console.log(event.checked);
+    if (event.checked) {
+      this.document.body.classList.add('dark-mode');
+    } else {
+      this.document.body.classList.remove('dark-mode');
+    }
   }
 
 }

@@ -1,0 +1,42 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+
+//********************* Creando Theme Light *********************
+$custom-light-primary: mat.define-palette(mat.$cyan-palette, 400); //* 400, es el tono principal a usar
+$custom-light-accent: mat.define-palette(mat.$light-green-palette, A200); //* A200, es el tono a usar
+//* $custom-light-warn: mat.define-palette(mat.$red-palette, 900); //* Opcional, por defecto Angular Material ya lo define
+
+$custom-light-theme: mat.define-light-theme((
+  color: (
+    primary: $custom-light-primary,
+    accent: $custom-light-accent,
+    //* warn: $custom-light-warn, //* Opcional, Angular define la paleta red-palette por defecto para warn
+  ),
+  //* Incluya únicamente "typography" y "density" en el tema predeterminado
+  typography: mat.define-typography-config(), //* Tipografía por defecto
+  density: 0, //* Densidad por defecto
+));
+
+//********************* Creando Theme Dark *********************
+$custom-dark-primary: mat.define-palette(mat.$deep-purple-palette, A200);
+$custom-dark-accent: mat.define-palette(mat.$pink-palette, 400);
+
+$custom-dark-theme: mat.define-dark-theme((
+  color: (
+    primary: $custom-dark-primary,
+    accent: $custom-dark-accent,
+  )
+   //* Aquí no incluimos el "typography" ni el "density" dado que ya lo definimos en el theme light
+   //* y ese theme light será nuestro tema por defecto
+));
+
+//* Aplica el tema claro por defecto
+@include mat.all-component-themes($custom-light-theme);
+
+//* Aplique el tema oscuro en el ámbito de la clase .dark-mode
+.dark-mode {
+  //* Este mixin ahora solo genera los estilos de color.
+  @include mat.all-component-colors($custom-dark-theme);
+}

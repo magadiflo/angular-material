@@ -638,8 +638,9 @@ Cuando instalamos Angular Material, en el proceso de instalación nos pidió sel
 
 **IMPORTANTE**
 
-Cuando instalamos Angular Material, en el proceso de instalación nos pidió seleccionar un theme y nosotros seleccionamos `purple-green`. Pues bien, como crearemos nuestro propio theme, eliminaremos la referencia que se agregó en el archivo `angular.json` del theme que seleccionamos, dado que ahora crearemos nuestro propio theme. **Esto debíamos haberlo hecho en el capítulo 3 Cómo personalizar el tema de angular material | Angular 17?**
-pero se me olvidó.
+Cuando instalamos Angular Material, en el proceso de instalación nos pidió seleccionar un theme y nosotros seleccionamos `purple-green`. Pues bien, como crearemos nuestro propio theme, eliminaremos la referencia que se agregó en el archivo `angular.json` del theme que seleccionamos, dado que ahora crearemos nuestro propio theme. **Esto debíamos haberlo hecho en el capítulo 3 Cómo personalizar el tema de angular material | Angular 17?** pero se me olvidó. 
+
+A continuación se muestra el parte del archivo `angular.json` y la eliminación de la referencia agregada:
 
 ```json
 "styles": [
@@ -669,4 +670,209 @@ body {
 }
 ```
 
-El archivo `custom-theme.scss` será el archivo que contendrá nuestro theme personalizado, por el momento solo está creado el archivo, no tienen ningún estilo definido.
+El archivo que estamos importando `custom-theme.scss` será el archivo que contendrá nuestro theme personalizado, por el momento solo está creado el archivo, no tienen ningún estilo definido.
+
+## Creando el theme dark y light
+
+El tema personalizado que crearemos será usando las paletas de colores que Angular Material nos provee. 
+[Para ver las paletas de colores de Angular Material visitar este enlace.](https://m1.material.io/style/color.html#color-color-palette)
+
+En nuestro caso, elegiremos para el `theme light` la paleta `cyan` y `light green`:
+
+![theme light](./src/assets/04.palette-light.png)
+
+Para nuestro `theme dark` usaremos la paleta `deep purple` y `pink`:
+
+![theme dark](./src/assets/05.palette-dark.png)
+
+
+Bien, una vez habiendo elegido nuestra paleta de colores, vamos a nuestro archivo `custom-theme.scss` y empezamos a agregar los estilos usando `sass`:
+
+
+```scss
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+
+//********************* Creando Theme Light *********************
+$custom-light-primary: mat.define-palette(mat.$cyan-palette, 400); //* 400, es el tono principal a usar
+$custom-light-accent: mat.define-palette(mat.$light-green-palette, A200); //* A200, es el tono a usar
+//* $custom-light-warn: mat.define-palette(mat.$red-palette, 900); //* Opcional, por defecto Angular Material ya lo define
+
+$custom-light-theme: mat.define-light-theme((
+  color: (
+    primary: $custom-light-primary,
+    accent: $custom-light-accent,
+    //  warn: $custom-light-warn,  Opcional, Angular define la paleta red-palette por defecto para warn
+  ),
+  
+  // Incluya únicamente "typography" y "density" en el tema predeterminado
+  typography: mat.define-typography-config(), // Tipografía por defecto
+  density: 0, // Densidad por defecto
+));
+
+//********************* Creando Theme Dark *********************
+$custom-dark-primary: mat.define-palette(mat.$deep-purple-palette, A200);
+$custom-dark-accent: mat.define-palette(mat.$pink-palette, 400);
+
+$custom-dark-theme: mat.define-dark-theme((
+  color: (
+    primary: $custom-dark-primary,
+    accent: $custom-dark-accent,
+  )
+  // Aquí no incluimos el "typography" ni el "density" dado que ya lo definimos en el theme light
+  // y ese theme light será nuestro tema por defecto
+));
+
+//* Aplica el tema claro por defecto
+@include mat.all-component-themes($custom-light-theme);
+
+//* Aplique el tema oscuro en el ámbito de la clase .dark-mode
+.dark-mode {
+  //* Este mixin ahora solo genera los estilos de color.
+  @include mat.all-component-colors($custom-dark-theme);
+}
+```
+
+**Importante**
+
+Si observamos dentro de la clase `.dark-mode` estamos incluyendo el mixin `all-component-colors` y dentro de él definiéndole nuestro theme dark. 
+
+**¿Por qué no usamos el mixin anterior `@include mat.all-component-themes($custom-dark-theme);`?**. Pues, si lo incluímos así, nos va a mostrar el siguiente mensaje de advertencia en la línea de comandos:
+
+```bash
+Application bundle generation complete. [8.305 seconds]
+
+▲ [WARNING] The same density styles are generated multiple times. Read more about how style duplication can be avoided in a dedicated guide. https://github.com/angular/components/blob/main/guides/duplicate-theming-styles.md [plugin angular-sass]
+
+    angular:styles/global:styles:1:8:
+      1 │ @import 'src/styles.scss';
+        ╵         ~~~~~~~~~~~~~~~~~
+```
+
+**¿Qué significa?**
+
+Como se explica en la guía de temas, un tema en Angular Material consta de configuraciones para los sistemas de `color`, `densidad` y `tipografía`. Como algunos de estos sistemas individuales tienen configuraciones predeterminadas, algunos patrones de uso pueden `causar duplicación en la salida CSS`.
+
+Veamos el siguiente ejemplo que nos muestra Angular de patrones que generan estilos de temas duplicados. Este 
+ejemplo y otros más lo podemos ver en el siguiente enlace [Evitar estilos de temas duplicados](https://github.com/angular/components/blob/main/guides/duplicate-theming-styles.md)
+
+### Ejemplo 01:
+
+```scss
+@use '@angular/material' as mat;
+
+$light-theme: mat.define-light-theme((color: ...));
+$dark-theme: mat.define-dark-theme((color: ...));
+
+// Genera estilos para todos los sistemas configurados en el tema. En este caso, 
+// se generan estilos de color y estilos de densidad predeterminados. 
+// La densidad está en los temas de forma predeterminada.
+@include mat.all-component-themes($light-theme);
+
+.dark-theme {
+  // Genera estilos para todos los sistemas configurados en el tema.
+  // En este caso, se generan estilos de color y estilos de densidad predeterminados. 
+  // **Tenga en cuenta** que esto es un problema porque significa que los estilos de 
+  // densidad se generan *nuevamente*, aunque solo debería cambiar el color.
+  @include mat.all-component-themes($dark-theme);
+}
+```
+
+Para solucionar este problema, puede utilizar el mixin dedicado para estilos de color para el selector `dark-mode`. Reemplace el mixin `all-component-themes` e incluya el tema oscuro usando el mixin `all-component-colors`. Por ejemplo:
+
+```scss
+@use '@angular/material' as mat;
+
+...
+@include mat.all-component-themes($light-theme);
+
+.dark-theme {
+  // This mixin only generates the color styles now.
+  @include mat.all-component-colors($dark-theme);
+}
+```
+
+Como observamos, el ejemplo que nos muestra la página del repositorio de Angular es muy explícito, nos invita a utilizar el mixin `all-component-colors` en lugar de nuevamente usar el mixin `all-component-themes`, puesto que si lo hacemos veremos el warning en consola indicándonos que se están duplicando algunos estilos.
+
+
+## Theme Dark Background
+
+Para que realmente nuestra página se vea con el fondo negro, es decir, no solo aplique el tema dark definido a los componentes de Angular material, sino que se vea realmente en toda la página con fondo negro debemos agregar la clase `mat-app-background` a un contenedor principal, en nuestro caso sería el `body`:
+
+```html
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Angular Material</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body class="mat-typography mat-app-background">
+  <app-root></app-root>
+</body>
+
+</html>
+```
+**IMPORTANTE**
+
+Si no colocamos esta clase, veremos que únicamente los componentes de Angular Material aplicarán el theme dark definido, mientras que el fondo de la página seguirá viendose en blanco.
+
+## Haciendo switch entre theme light y dark
+
+Para hacer el cambio entre el theme light y dark, utilizaremos el componente `SlideToggleComponent` y codificaremos la lógica de cambio.
+
+```html
+<section>
+  <mat-slide-toggle class="example-margin" (change)="onChangeSlideToggle($event)">
+    Slide me!
+  </mat-slide-toggle>
+</section>
+```
+
+En el componente de typescript escribimos la lógica:
+
+```typescript
+import { Component, inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
+
+@Component({
+  selector: 'app-slide-toggle',
+  standalone: true,
+  imports: [MatSlideToggleModule],
+  templateUrl: './slide-toggle.component.html',
+  styleUrl: './slide-toggle.component.scss'
+})
+export class SlideToggleComponent {
+
+  private document = inject(DOCUMENT);
+
+  onChangeSlideToggle(event: MatSlideToggleChange): void {
+    console.log(event.checked);
+    if (event.checked) {
+      this.document.body.classList.add('dark-mode');
+    } else {
+      this.document.body.classList.remove('dark-mode');
+    }
+  }
+}
+```
+Cada vez que el usuario haga click en el `slide` se recibirá el evento `MatSlideToggleChange` con el que verificaremos si el elemento está `checkeado` o `no checkeado`. En el caso de qué esté `checked` le agregaremos la clase `dark-mode` al body de nuestra página. Notar que la clase `dark-mode` es la clase que definimos en el archivo `custom-theme.scss` y que dentro de él está incluyendo el theme dark.
+
+## Comprobando themas
+
+Una vez finalizado, reiniciamos la aplicación y hacemos la prueba. Por defecto dijimos que la aplicación estará en modo `light`:
+
+![light](./src/assets/06.light.png)
+
+Ahora hacemos click en el slide y vemos que estamos en el modo `dark`:
+
+![dark](./src/assets/07.dark.png)
